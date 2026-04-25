@@ -17,7 +17,23 @@ def index():
 # Login Page
 @app.route("/login")
 def login():
-   return render_template("login.html")
+   if (request.method == "GET"):
+      return render_template("login.html")
+   if (request.method == "POST"):
+      # Pulls user input from the html page
+      username = request.form["username"]
+      user_password = request.form["password"]
+
+      # Renders different Pages depending on user permissions
+      if ("admin"):
+         return render_template("admin_page.html")
+      elif ("instructor"):
+         return render_template("instructor_page.html")
+      elif ("student"):
+         return render_template("student_page.html")
+      # If User not present in database, sends them back to login page
+      else:
+         return render_template("login.html")
 
 if (__name__ == "__main__"):
    #current port number was choosen arbitrarily
