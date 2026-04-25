@@ -1,1 +1,8 @@
+/*
+login.css
+stylesheet for elements specific to the login page
+*/
 
+input.username {
+   align-self: center;
+}
