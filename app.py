@@ -23,14 +23,14 @@ def login():
       # Pulls user input from the html page
       username = request.form["username"]
       user_password = request.form["password"]
-      
+
       # Renders different Pages depending on user permissions
       if ("admin"):
-         pass
+         return render_template("admin_page.html")
       elif ("instructor"):
-         pass
+         return render_template("instructor_page.html")
       elif ("student"):
-         pass
+         return render_template("student_page.html")
       # If User not present in database, sends them back to login page
       else:
          return render_template("login.html")
