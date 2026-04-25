@@ -9,10 +9,15 @@ db = 0
 app = Flask(__name__)
 app.debug = True
 
-# The Home page
+# The Home Page
 @app.route("/")
 def index():
    return render_template("index.html")
+
+# Login Page
+@app.route("/login")
+def login():
+   return render_template("login.html")
 
 if (__name__ == "__main__"):
    #current port number was choosen arbitrarily
