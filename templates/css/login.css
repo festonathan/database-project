@@ -3,6 +3,10 @@ login.css
 stylesheet for elements specific to the login page
 */
 
-input.username {
-   align-self: center;
+p {
+   text-align: center;
+}
+
+input.text-field {
+   text-align: center;
 }
