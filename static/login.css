@@ -1,0 +1,12 @@
+/*
+login.css
+stylesheet for elements specific to the login page
+*/
+
+p {
+   text-align: center;
+}
+
+input.text-field {
+   text-align: center;
+}

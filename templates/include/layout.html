@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="en" data-bs-theme="dark">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flask app</title>
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-   <!--If we want a navbar it would go here-->
-   {% block content %}
+<html lang="en" bootstrap-theme="dark">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Flask app</title>
+      <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+   </head>
+   <body>
+      <!--If we want a navbar it would go here-->
+      {% block content %}
    
-   {% endblock %}
-   <!--If we want a footer it would go here-->
-  </body>
+      {% endblock %}
+      <!--If we want a footer it would go here-->
+   </body>
 </html>
