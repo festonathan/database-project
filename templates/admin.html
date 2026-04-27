@@ -3,11 +3,76 @@
 
    <h1>Administrator Dashboard</h1>
 
-   <h2>Courses</h2>
+   <!--create, view, modify, destroy-->
+   <!--Classroom
+   Section
+   Department
+   Time Slot-->
 
-   <h2>Instructors</h2>
+   <h2>Personal Information</h2>
+   <!--Just modifying passowrd-->
+
+   <!--Courses Table-->
+   <h2>Courses</h2>
+   <table>
+      <tr>
+         <th>Course ID</th>
+         <th>Course Title</th>
+         <th>Department</th>
+         <th>Credits</th>
+      </tr>
+      {% for course in data %}
+         <tr>
+            <td>{{ course["course_id"] }}</td>
+            <td>{{ course["title"] }}</td>
+            <td>{{ course["dept_name"] }}</td>
+            <td>{{ course["credits"] }}</td>
+         </tr>
+      {% endfor %}
+   </table>
+   <!--create, modify, destroy-->
+
    
+   <!--Instructors Table-->
+   <h2>Instructors</h2>
+   <table>
+      <tr>
+         <th>Instructor ID</th>
+         <th>User ID</th>
+         <th>Legal Name</th>
+         <th>Department</th>
+         <th>Salary</th>
+      </tr>
+      {% for instructor in data %}
+         <tr>
+            <td>{{ instructor["instructor_id"] }}</td>
+            <td>{{ instructor["user_id"] }}</td>
+            <td>{{ instructor["first_name"] instructor["middle_name"] instructor["last_name"] }}</td>
+            <td>{{ instructor["dept_name"] }}</td>
+            <td>{{ instructor["salary"] }}</td>
+         </tr>
+      {% endfor %}
+   </table>
+
+   <!--create, modify, destroy-->
+   <!--Modify Instructors to course sections-->
+
+
+
+   <!--Students Table-->
    <h2>Students</h2>
+   <table>
+      <tr>
+         <th>Student ID</th><th>User ID</th><th>Legal Name</th><th>Department</th><th>Total Credits</th><th>Advisor ID</th>
+      </tr>
+      {% for student in data %}
+         <tr>
+            <td>{{ student["student_id"] }}</td><td>{{ student["user_id"] }}</td><td>{{ student["first_name"] student["middle_name"] student["last_name"] }}</td><td>{{ student["dept_name"] }}</td><td>{{ student["tot_cred"] }}</td><td>{{ student["advisor_id"] }}</td>
+         </tr>
+      {% endfor %}
+   </table>
+
+   <!--create, modify, destroy-->
 
 
 {% endblock %}
