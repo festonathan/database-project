@@ -3,10 +3,10 @@ login.css
 stylesheet for elements specific to the login page
 */
 
-p {
+h1, p {
    text-align: center;
 }
 
-input.text-field {
+.login-field {
    text-align: center;
 }

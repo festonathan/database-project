@@ -1,92 +1,13 @@
-{% extends "include/layout.html" %}
-
+{% extends  '/include/layout.html' %}
 {% block content %}
-<h2>Admin Dashboard</h2>
-<p>Logged in as {{ user_id }}</p>
 
-<a href="/admin/courses">Courses</a> |
-<a href="/admin/students">Students</a> |
-<a href="/admin/instructors">Instructors</a> |
-<a href="/logout">Logout</a>
+   <h1>Administrator Dashboard</h1>
 
-{% if msg %}
-<p>{{ msg }}</p>
-{% endif %}
+   <h2>Courses</h2>
 
-{% if page == "courses" %}
-<h3>Search Course</h3>
-<form method="POST">
-    <input type="text" name="course_id" placeholder="Course ID">
-    <input type="submit" value="Search">
-</form>
+   <h2>Instructors</h2>
+   
+   <h2>Students</h2>
 
-{% if data %}
-<table border="1">
-    <tr>
-        <th>Course ID</th>
-        <th>Title</th>
-        <th>Department</th>
-        <th>Credits</th>
-    </tr>
-    {% for row in data %}
-    <tr>
-        <td>{{ row[0] }}</td>
-        <td>{{ row[1] }}</td>
-        <td>{{ row[2] }}</td>
-        <td>{{ row[3] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
-{% endif %}
 
-{% if page == "students" %}
-<h3>Students</h3>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>First</th>
-        <th>Middle</th>
-        <th>Last</th>
-        <th>Department</th>
-        <th>Credits</th>
-        <th>Advisor</th>
-    </tr>
-    {% for row in data %}
-    <tr>
-        <td>{{ row[0] }}</td>
-        <td>{{ row[1] }}</td>
-        <td>{{ row[2] }}</td>
-        <td>{{ row[3] }}</td>
-        <td>{{ row[4] }}</td>
-        <td>{{ row[5] }}</td>
-        <td>{{ row[6] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
-
-{% if page == "instructors" %}
-<h3>Instructors</h3>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>First</th>
-        <th>Middle</th>
-        <th>Last</th>
-        <th>Department</th>
-        <th>Salary</th>
-    </tr>
-    {% for row in data %}
-    <tr>
-        <td>{{ row[0] }}</td>
-        <td>{{ row[1] }}</td>
-        <td>{{ row[2] }}</td>
-        <td>{{ row[3] }}</td>
-        <td>{{ row[4] }}</td>
-        <td>{{ row[5] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
 {% endblock %}
