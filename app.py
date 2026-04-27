@@ -8,11 +8,9 @@ app.secret_key = "secret_key"
 
 db = config.dbserver
 
-
 @app.route("/")
 def index():
     return redirect(url_for("login"))
-
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
