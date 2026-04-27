@@ -4,13 +4,51 @@
    <h1>Administrator Dashboard</h1>
 
    <!--create, view, modify, destroy-->
-   <!--Classroom
-   Section
-   Department
-   Time Slot-->
+   <!--Time Slot-->
 
    <h2>Personal Information</h2>
-   <!--Just modifying passowrd-->
+   
+   <h3>Password</h3>
+   <!--Just modifying password-->
+
+
+   <!--Department Table-->
+   <h2>Department</h2>
+   <table>
+      <tr>
+         <th>Department Name</th>
+         <th>Building</th>
+         <th>Budget</th>
+      </tr>
+      {% for department in data %}
+         <tr>
+            <td>{{ department["dept_name"] }}</td>
+            <td>{{ department["buidling"] }}</td>
+            <td>{{ department["budget"] }}</td>
+         </tr>
+      {% endfor %}
+   </table>
+   <!--create, modify, destroy-->
+
+
+   <!--Classroom Table-->
+   <h2>Classroom</h2>
+   <table>
+      <tr>
+         <th>Building</th>
+         <th>Room Number</th>
+         <th>Capacity</th>
+      </tr>
+      {% for classroom in data %}
+         <tr>
+            <td>{{ classroom["building"] }}</td>
+            <td>{{ classroom["room_number"] }}</td>
+            <td>{{ classroom["capacity"] }}</td>
+         </tr>
+      {% endfor %}
+   </table>
+   <!--create, modify, destroy-->
+
 
    <!--Courses Table-->
    <h2>Courses</h2>
@@ -32,7 +70,33 @@
    </table>
    <!--create, modify, destroy-->
 
-   
+   <!--Section Table-->
+   <h2>Section</h2>
+   <table>
+      <tr>
+         <th>Course ID</th>
+         <th>Section ID</th>
+         <th>Semester</th>
+         <th>Year</th>
+         <th>Building</th>
+         <th>Room Number</th>
+         <th>Time Slot ID</th>
+      </tr>
+      {% for section in data %}
+         <tr>
+            <td>{{ section["course_id"] }}</td>
+            <td>{{ section["sec_id"] }}</td>
+            <td>{{ section["semester"] instructor["middle_name"] instructor["last_name"] }}</td>
+            <td>{{ section["sec_year"] }}</td>
+            <td>{{ section["building"] }}</td>
+            <td>{{ section["room_number"] }}</td>
+            <td>{{ section["time_slot_id"] }}</td>
+         </tr>
+      {% endfor %}
+   </table>
+   <!--create, modify, destroy-->
+
+
    <!--Instructors Table-->
    <h2>Instructors</h2>
    <table>
