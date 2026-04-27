@@ -25,20 +25,25 @@
    </form>
 
    <!--Displays Student list for selected section-->
-   <h3>Students List</h3>
-
-
-
    <!--Should display grades and submit grades for students-->
-   <form action="" method="POST">
-      {% for _ in data %}
-         <p>New Password</p>
-         <input type="text" name="student_grade">
-         <p>Confirm Password</p>
-         <input type="text" name="confirm_password">
-         <br><br>
-         <input type="submit" value="New Password">
-      {% endfor %}
+   <h3>Students List</h3>
+   <form>
+      <table>
+         <tr>
+            <th>Section ID</th>
+            <th>Course ID</th>
+            <th>Student ID</th>
+            <th>Grade</th>
+         </tr>
+         {% for enrollment in data %}
+         <tr>
+            <td>{{ enrollment["sec_id"] }}</td>
+            <td>{{ enrollment["Course_id"] }}</td>
+            <td>{{ enrollment["student_id"] }}</td>
+            <td>{{ enrollment["grade"] }}</td>
+         </tr>
+         {% endfor %}
+      </table>
    </form>
 
 
