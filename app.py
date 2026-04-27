@@ -15,21 +15,23 @@ def index():
    return render_template("index.html")
 
 # Login Page
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
    if (request.method == "GET"):
       return render_template("login.html")
    if (request.method == "POST"):
       # Pulls user input from the html page
-      username = request.form["username"]
-      user_password = request.form["password"]
+      username = request.form['username']
+      user_password = request.form['password']
 
+      print(username)
+      print(user_password)
       # Renders different Pages depending on user permissions
-      if ("admin"):
+      if ("admin" and False):
          return render_template("admin_page.html")
-      elif ("instructor"):
+      elif ("instructor" and False):
          return render_template("instructor_page.html")
-      elif ("student"):
+      elif ("student" and False):
          return render_template("student_page.html")
       # If User not present in database, sends them back to login page
       else:

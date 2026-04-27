@@ -1,14 +1,23 @@
 {% extends  '/include/layout.html' %}
 {% block content %}
-
    <!--Login page specific formatting-->
-   <link rel="stylesheet" href="css/login.css">
+   <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}"">
 
+   <img src="">
+   <br>
+   <h1>Sign in to Course Registration</h1>
+   <br>
+   <!--Input fields to login-->
+   <div class="login-field">
+      <form action="/login" method="POST">
+         <label>Username: <input type="text" name="username"></label>
+         <br><br>
+         <label>Password: <input type="text" name="password">
+         <br><br>
+         <input type="submit" value="Sign In">
+      </form>
+   </div>
+   <br>
    <p>should create multiple input boxes for login information</p>
-   <form action="/login" method="POST">
-      <input class="text-field" type="text" id="username" name="username">
-      <br><br>
-      <input type="text" id="password" name="password">
-   </form>
 
 {% endblock %}
