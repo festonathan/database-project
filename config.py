@@ -1,4 +1,8 @@
-#import pymysql
+import pymysql
 
-# Database Connection
-#dbserver = pymysql.connect(host="", user="", password="", database="univ_db")
+dbserver = pymysql.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="univ_db"
+)
