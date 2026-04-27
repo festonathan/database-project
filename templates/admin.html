@@ -3,14 +3,19 @@
 
    <h1>Administrator Dashboard</h1>
 
-   <!--create, view, modify, destroy-->
-   <!--Time Slot-->
-
    <h2>Personal Information</h2>
    
-   <h3>Password</h3>
-   <!--Just modifying password-->
-
+   <!-- <h3>Password</h3> -->
+   <!--Changing Password-->
+   <!-- <form action="" method="POST">
+      <p>New Password</p>
+      <input type="text" name="new_password">
+      <p>Confirm Password</p>
+      <input type="text" name="confirm_password">
+      <br><br>
+      <input type="submit" value="New Password">
+   </form> -->
+   <br>
 
    <!--Department Table-->
    <h2>Department</h2>
@@ -86,11 +91,32 @@
          <tr>
             <td>{{ section["course_id"] }}</td>
             <td>{{ section["sec_id"] }}</td>
-            <td>{{ section["semester"] instructor["middle_name"] instructor["last_name"] }}</td>
+            <td>{{ section["semester"] }}</td>
             <td>{{ section["sec_year"] }}</td>
             <td>{{ section["building"] }}</td>
             <td>{{ section["room_number"] }}</td>
             <td>{{ section["time_slot_id"] }}</td>
+         </tr>
+      {% endfor %}
+   </table>
+   <!--create, modify, destroy-->
+
+
+   <!--Time Slot Table-->
+   <h2>Time Slot</h2>
+   <table>
+      <tr>
+         <th>Time Slot ID</th>
+         <th>Day(s)</th>
+         <th>Start Time</th>
+         <th>End Time</th>
+      </tr>
+      {% for time_slot in data %}
+         <tr>
+            <td>{{ time_slot["time_slot_id"] }}</td>
+            <td>{{ time_slot["day"] }}</td>
+            <td>{{ time_slot["start_hr"] }}:{{ time_slot["start_min"] }}</td>
+            <td>{{ time_slot["end_hr"] }}:{{ time_slot["end_min"] }}</td>
          </tr>
       {% endfor %}
    </table>
@@ -119,7 +145,7 @@
    </table>
 
    <!--create, modify, destroy-->
-   <!--Modify Instructors to course sections-->
+   <!--Modify Instructor's course sections-->
 
 
 
@@ -131,7 +157,12 @@
       </tr>
       {% for student in data %}
          <tr>
-            <td>{{ student["student_id"] }}</td><td>{{ student["user_id"] }}</td><td>{{ student["first_name"] student["middle_name"] student["last_name"] }}</td><td>{{ student["dept_name"] }}</td><td>{{ student["tot_cred"] }}</td><td>{{ student["advisor_id"] }}</td>
+            <td>{{ student["student_id"] }}</td>
+            <td>{{ student["user_id"] }}</td>
+            <td>{{ student["first_name"] student["middle_name"] student["last_name"] }}</td>
+            <td>{{ student["dept_name"] }}</td>
+            <td>{{ student["tot_cred"] }}</td>
+            <td>{{ student["advisor_id"] }}</td>
          </tr>
       {% endfor %}
    </table>
