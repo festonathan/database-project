@@ -3,8 +3,65 @@
 
    <h1>Instructor Dashboard</h1>
 
-   <h2>Sections Teaching</h2>
+   <h2>Personal Information</h2>
+   <!--<h3>Password</h3>-->
+   <!--Changing Password-->
+   <!-- <form action="" method="POST">
+      <p>New Password</p>
+      <input type="text" name="new_password">
+      <p>Confirm Password</p>
+      <input type="text" name="confirm_password">
+      <br><br>
+      <input type="submit" value="New Password">
+   </form> -->
+   <br>
 
-   <h3>Students</h3>
+   <h2>Sections Teaching</h2>
+   <!--Clicks on a button for a given section-->
+   <form action="/instructor/sections">
+      {% for section in data %}
+         <input type="button" name="{{ section['sec_id'] }}">
+      {% endfor %}
+   </form>
+
+   <!--Displays Student list for selected section-->
+   <h3>Students List</h3>
+
+
+
+   <!--Should display grades and submit grades for students-->
+   <form action="" method="POST">
+      {% for _ in data %}
+         <p>New Password</p>
+         <input type="text" name="student_grade">
+         <p>Confirm Password</p>
+         <input type="text" name="confirm_password">
+         <br><br>
+         <input type="submit" value="New Password">
+      {% endfor %}
+   </form>
+
+
+   <!--Courses Table-->
+   <h2>Courses</h2>
+   <table>
+      <tr>
+         <th>Course ID</th>
+         <th>Course Title</th>
+         <th>Department</th>
+         <th>Credits</th>
+      </tr>
+      {% for course in data %}
+         <tr>
+            <td>{{ course["course_id"] }}</td>
+            <td>{{ course["title"] }}</td>
+            <td>{{ course["dept_name"] }}</td>
+            <td>{{ course["credits"] }}</td>
+         </tr>
+      {% endfor %}
+   </table>
+   <!--create, modify, destroy-->
+
+   
 
 {% endblock %}
