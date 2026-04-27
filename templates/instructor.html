@@ -1,10 +1,177 @@
-{% extends  '/include/layout.html' %}
+{% extends "include/layout.html" %}
+
 {% block content %}
+<h2>Instructor Dashboard</h2>
+<p>Logged in as {{ user_id }}</p>
 
-   <h1>Instructor Dashboard</h1>
+<a href="/instructor/sections">Sections Teaching</a> |
+<a href="/instructor/roster">Section Roster</a> |
+<a href="/instructor/submit-grade">Submit Grade</a> |
+<a href="/instructor/change-grade">Change Grade</a> |
+<a href="/instructor/advisor">Advisor Students</a> |
+<a href="/instructor/prereq">Prerequisites</a> |
+<a href="/logout">Logout</a>
 
-   <h2>Sections Teaching</h2>
+{% if msg %}
+<p>{{ msg }}</p>
+{% endif %}
 
-   <h3>Students</h3>
+{% if page == "sections" %}
+<h3>Check Sections Teaching</h3>
+
+<form method="POST">
+    <label>Semester:</label>
+    <select name="semester">
+        <option>Fall</option>
+        <option>Spring</option>
+        <option>Summer</option>
+        <option>Winter</option>
+    </select>
+
+    <label>Year:</label>
+    <input name="sec_year" placeholder="Year">
+
+    <input type="submit" value="Search">
+</form>
+
+{% if data %}
+<table border="1">
+    <tr>
+        <th>Course ID</th>
+        <th>Title</th>
+        <th>Section ID</th>
+        <th>Semester</th>
+        <th>Year</th>
+    </tr>
+    {% for row in data %}
+    <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+        <td>{{ row[4] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
+
+{% if page == "roster" %}
+<h3>Check Section Roster</h3>
+
+<form method="POST">
+    <input name="course_id" placeholder="Course ID">
+    <input name="sec_id" placeholder="Section ID">
+
+    <select name="semester">
+        <option>Fall</option>
+        <option>Spring</option>
+        <option>Summer</option>
+        <option>Winter</option>
+    </select>
+
+    <input name="sec_year" placeholder="Year">
+    <input type="submit" value="Search Roster">
+</form>
+
+{% if data %}
+<table border="1">
+    <tr>
+        <th>Student ID</th>
+        <th>First</th>
+        <th>Middle</th>
+        <th>Last</th>
+        <th>Department</th>
+        <th>Grade</th>
+    </tr>
+    {% for row in data %}
+    <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+        <td>{{ row[4] }}</td>
+        <td>{{ row[5] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
+
+{% if page == "submit_grade" %}
+<h3>Submit Grade</h3>
+
+<form method="POST">
+    <input name="student_id" placeholder="Student ID">
+    <input name="course_id" placeholder="Course ID">
+    <input name="sec_id" placeholder="Section ID">
+
+    <select name="semester">
+        <option>Fall</option>
+        <option>Spring</option>
+        <option>Summer</option>
+        <option>Winter</option>
+    </select>
+
+    <input name="sec_year" placeholder="Year">
+    <input name="grade" placeholder="Grade">
+    <input type="submit" value="Submit Grade">
+</form>
+{% endif %}
+
+{% if page == "change_grade" %}
+<h3>Change Grade</h3>
+
+<form method="POST">
+    <input name="student_id" placeholder="Student ID">
+    <input name="course_id" placeholder="Course ID">
+    <input name="sec_id" placeholder="Section ID">
+
+    <select name="semester">
+        <option>Fall</option>
+        <option>Spring</option>
+        <option>Summer</option>
+        <option>Winter</option>
+    </select>
+
+    <input name="sec_year" placeholder="Year">
+    <input name="grade" placeholder="New Grade">
+    <input type="submit" value="Change Grade">
+</form>
+{% endif %}
+
+{% if page == "advisor" %}
+<h3>Add or Remove Advisor Student</h3>
+
+<form method="POST">
+    <input type="hidden" name="action" value="add">
+    <input name="student_id" placeholder="Student ID">
+    <input type="submit" value="Add Student as Advisee">
+</form>
+
+<form method="POST">
+    <input type="hidden" name="action" value="remove">
+    <input name="student_id" placeholder="Student ID">
+    <input type="submit" value="Remove Student as Advisee">
+</form>
+{% endif %}
+
+{% if page == "prereq" %}
+<h3>Add or Remove Course Prerequisite</h3>
+
+<form method="POST">
+    <input type="hidden" name="action" value="add">
+    <input name="course_id" placeholder="Course ID">
+    <input name="prereq_id" placeholder="Prerequisite Course ID">
+    <input type="submit" value="Add Prerequisite">
+</form>
+
+<form method="POST">
+    <input type="hidden" name="action" value="remove">
+    <input name="course_id" placeholder="Course ID">
+    <input name="prereq_id" placeholder="Prerequisite Course ID">
+    <input type="submit" value="Remove Prerequisite">
+</form>
+{% endif %}
 
 {% endblock %}

@@ -1,173 +1,218 @@
-{% extends  '/include/layout.html' %}
+{% extends "include/layout.html" %}
+
 {% block content %}
+<h2>Admin Dashboard</h2>
+<p>Logged in as {{ user_id }}</p>
 
-   <h1>Administrator Dashboard</h1>
+<a href="/admin/courses">Courses</a> |
+<a href="/admin/students">Students</a> |
+<a href="/admin/instructors">Instructors</a> |
+<a href="/admin/assign-teacher">Assign Teacher</a> |
+<a href="/admin/reports">Reports</a> |
+<a href="/logout">Logout</a>
 
-   <h2>Personal Information</h2>
-   
-   <!-- <h3>Password</h3> -->
-   <!--Changing Password-->
-   <!-- <form action="" method="POST">
-      <p>New Password</p>
-      <input type="text" name="new_password">
-      <p>Confirm Password</p>
-      <input type="text" name="confirm_password">
-      <br><br>
-      <input type="submit" value="New Password">
-   </form> -->
-   <br>
+{% if msg %}
+<p>{{ msg }}</p>
+{% endif %}
 
-   <!--Department Table-->
-   <h2>Department</h2>
-   <table>
-      <tr>
-         <th>Department Name</th>
-         <th>Building</th>
-         <th>Budget</th>
-      </tr>
-      {% for department in data %}
-         <tr>
-            <td>{{ department["dept_name"] }}</td>
-            <td>{{ department["buidling"] }}</td>
-            <td>{{ department["budget"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+{% if page == "courses" %}
+<h3>Manage Courses</h3>
 
+<form method="POST">
+    <input type="hidden" name="action" value="create">
+    <input name="course_id" placeholder="Course ID">
+    <input name="title" placeholder="Title">
+    <input name="dept_name" placeholder="Department">
+    <input name="credits" placeholder="Credits">
+    <input type="submit" value="Create Course">
+</form>
 
-   <!--Classroom Table-->
-   <h2>Classroom</h2>
-   <table>
-      <tr>
-         <th>Building</th>
-         <th>Room Number</th>
-         <th>Capacity</th>
-      </tr>
-      {% for classroom in data %}
-         <tr>
-            <td>{{ classroom["building"] }}</td>
-            <td>{{ classroom["room_number"] }}</td>
-            <td>{{ classroom["capacity"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+<form method="POST">
+    <input type="hidden" name="action" value="read">
+    <input name="course_id" placeholder="Course ID">
+    <input type="submit" value="Search Course">
+</form>
 
+<form method="POST">
+    <input type="hidden" name="action" value="update">
+    <input name="course_id" placeholder="Course ID">
+    <input name="title" placeholder="Title">
+    <input name="dept_name" placeholder="Department">
+    <input name="credits" placeholder="Credits">
+    <input type="submit" value="Update Course">
+</form>
 
-   <!--Courses Table-->
-   <h2>Courses</h2>
-   <table>
-      <tr>
-         <th>Course ID</th>
-         <th>Course Title</th>
-         <th>Department</th>
-         <th>Credits</th>
-      </tr>
-      {% for course in data %}
-         <tr>
-            <td>{{ course["course_id"] }}</td>
-            <td>{{ course["title"] }}</td>
-            <td>{{ course["dept_name"] }}</td>
-            <td>{{ course["credits"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+<form method="POST">
+    <input type="hidden" name="action" value="delete">
+    <input name="course_id" placeholder="Course ID">
+    <input type="submit" value="Delete Course">
+</form>
 
-   <!--Section Table-->
-   <h2>Section</h2>
-   <table>
-      <tr>
-         <th>Course ID</th>
-         <th>Section ID</th>
-         <th>Semester</th>
-         <th>Year</th>
-         <th>Building</th>
-         <th>Room Number</th>
-         <th>Time Slot ID</th>
-      </tr>
-      {% for section in data %}
-         <tr>
-            <td>{{ section["course_id"] }}</td>
-            <td>{{ section["sec_id"] }}</td>
-            <td>{{ section["semester"] }}</td>
-            <td>{{ section["sec_year"] }}</td>
-            <td>{{ section["building"] }}</td>
-            <td>{{ section["room_number"] }}</td>
-            <td>{{ section["time_slot_id"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+{% if data %}
+<table border="1">
+    <tr>
+        <th>Course ID</th>
+        <th>Title</th>
+        <th>Department</th>
+        <th>Credits</th>
+    </tr>
+    {% for row in data %}
+    <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
 
+{% if page == "students" %}
+<h3>Manage Students</h3>
 
-   <!--Time Slot Table-->
-   <h2>Time Slot</h2>
-   <table>
-      <tr>
-         <th>Time Slot ID</th>
-         <th>Day(s)</th>
-         <th>Start Time</th>
-         <th>End Time</th>
-      </tr>
-      {% for time_slot in data %}
-         <tr>
-            <td>{{ time_slot["time_slot_id"] }}</td>
-            <td>{{ time_slot["day"] }}</td>
-            <td>{{ time_slot["start_hr"] }}:{{ time_slot["start_min"] }}</td>
-            <td>{{ time_slot["end_hr"] }}:{{ time_slot["end_min"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+<form method="POST">
+    <input type="hidden" name="action" value="read">
+    <input name="student_id" placeholder="Student ID">
+    <input type="submit" value="Search Student">
+</form>
 
+<form method="POST">
+    <input type="hidden" name="action" value="create">
+    <input name="student_id" placeholder="Student ID">
+    <input name="first_name" placeholder="First Name">
+    <input name="middle_name" placeholder="Middle Name">
+    <input name="last_name" placeholder="Last Name">
+    <input name="dept_name" placeholder="Department">
+    <input name="tot_cred" placeholder="Credits">
+    <input name="advisor_id" placeholder="Advisor ID">
+    <input name="password" placeholder="Password">
+    <input type="submit" value="Create Student">
+</form>
 
-   <!--Instructors Table-->
-   <h2>Instructors</h2>
-   <table>
-      <tr>
-         <th>Instructor ID</th>
-         <th>User ID</th>
-         <th>Legal Name</th>
-         <th>Department</th>
-         <th>Salary</th>
-      </tr>
-      {% for instructor in data %}
-         <tr>
-            <td>{{ instructor["instructor_id"] }}</td>
-            <td>{{ instructor["user_id"] }}</td>
-            <td>{{ instructor["first_name"] instructor["middle_name"] instructor["last_name"] }}</td>
-            <td>{{ instructor["dept_name"] }}</td>
-            <td>{{ instructor["salary"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
+<form method="POST">
+    <input type="hidden" name="action" value="delete">
+    <input name="student_id" placeholder="Student ID">
+    <input type="submit" value="Delete Student">
+</form>
 
-   <!--create, modify, destroy-->
-   <!--Modify Instructor's course sections-->
+{% if data %}
+<table border="1">
+    {% for row in data %}
+    <tr>
+        {% for item in row %}
+        <td>{{ item }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
 
+{% if page == "instructors" %}
+<h3>Manage Instructors</h3>
 
+<form method="POST">
+    <input type="hidden" name="action" value="read">
+    <input name="instructor_id" placeholder="Instructor ID">
+    <input type="submit" value="Search Instructor">
+</form>
 
-   <!--Students Table-->
-   <h2>Students</h2>
-   <table>
-      <tr>
-         <th>Student ID</th><th>User ID</th><th>Legal Name</th><th>Department</th><th>Total Credits</th><th>Advisor ID</th>
-      </tr>
-      {% for student in data %}
-         <tr>
-            <td>{{ student["student_id"] }}</td>
-            <td>{{ student["user_id"] }}</td>
-            <td>{{ student["first_name"] student["middle_name"] student["last_name"] }}</td>
-            <td>{{ student["dept_name"] }}</td>
-            <td>{{ student["tot_cred"] }}</td>
-            <td>{{ student["advisor_id"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
+<form method="POST">
+    <input type="hidden" name="action" value="create">
+    <input name="instructor_id" placeholder="Instructor ID">
+    <input name="first_name" placeholder="First Name">
+    <input name="middle_name" placeholder="Middle Name">
+    <input name="last_name" placeholder="Last Name">
+    <input name="dept_name" placeholder="Department">
+    <input name="salary" placeholder="Salary">
+    <input name="password" placeholder="Password">
+    <input type="submit" value="Create Instructor">
+</form>
 
-   <!--create, modify, destroy-->
+<form method="POST">
+    <input type="hidden" name="action" value="delete">
+    <input name="instructor_id" placeholder="Instructor ID">
+    <input type="submit" value="Delete Instructor">
+</form>
 
+{% if data %}
+<table border="1">
+    {% for row in data %}
+    <tr>
+        {% for item in row %}
+        <td>{{ item }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
+
+{% if page == "assign_teacher" %}
+<h3>Assign Teacher to Section</h3>
+
+<form method="POST">
+    <input name="instructor_id" placeholder="Instructor ID">
+    <input name="course_id" placeholder="Course ID">
+    <input name="sec_id" placeholder="Section ID">
+    <select name="semester">
+        <option>Fall</option>
+        <option>Spring</option>
+        <option>Summer</option>
+        <option>Winter</option>
+    </select>
+    <input name="sec_year" placeholder="Year">
+    <input type="submit" value="Assign Teacher">
+</form>
+{% endif %}
+
+{% if page == "reports" %}
+<h3>Reports</h3>
+
+<form method="POST">
+    <select name="report_type">
+        <option value="avg_dept">Average Grade by Department</option>
+        <option value="avg_course_range">Average Grade by Course Range</option>
+        <option value="best_worst">Best/Worst Classes</option>
+        <option value="total_students_dept">Total Students by Department</option>
+        <option value="current_students_dept">Current Students by Department</option>
+    </select>
+
+    <input name="dept_name" placeholder="Department">
+    <input name="course_id" placeholder="Course ID">
+    <input name="start_year" placeholder="Start Year">
+    <input name="end_year" placeholder="End Year">
+
+    <select name="semester">
+        <option>Fall</option>
+        <option>Spring</option>
+        <option>Summer</option>
+        <option>Winter</option>
+    </select>
+
+    <input name="sec_year" placeholder="Year">
+
+    <select name="mode">
+        <option value="both">Both</option>
+        <option value="best">Best</option>
+        <option value="worst">Worst</option>
+    </select>
+
+    <input type="submit" value="Run Report">
+</form>
+
+{% if data %}
+<table border="1">
+    {% for row in data %}
+    <tr>
+        {% for item in row %}
+        <td>{{ item }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endif %}
 
 {% endblock %}

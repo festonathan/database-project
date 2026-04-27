@@ -1,10 +1,107 @@
-{% extends  '/include/layout.html' %}
+{% extends "include/layout.html" %}
+
 {% block content %}
+<h2>Student Dashboard</h2>
+<p>Logged in as {{ user_id }}</p>
 
-   <h1>Student Dashboard</h1>
+<a href="/student/courses">My Courses</a> |
+<a href="/student/register">Register for Class</a> |
+<a href="/student/drop">Drop Class</a> |
+<a href="/student/advisor">My Advisor</a> |
+<a href="/logout">Logout</a>
 
-   <h2>Courses Enrolled</h2>
+{% if msg %}
+<p>{{ msg }}</p>
+{% endif %}
 
-   <h2>Advisor</h2>
+{% if page == "courses" %}
+<h3>My Courses / Grades</h3>
+
+{% if data %}
+<table border="1">
+    <tr>
+        <th>Course ID</th>
+        <th>Title</th>
+        <th>Section ID</th>
+        <th>Semester</th>
+        <th>Year</th>
+        <th>Grade</th>
+    </tr>
+    {% for row in data %}
+    <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+        <td>{{ row[4] }}</td>
+        <td>{{ row[5] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No courses found.</p>
+{% endif %}
+{% endif %}
+
+{% if page == "register" %}
+<h3>Register for Class</h3>
+
+<form method="POST">
+    <input name="course_id" placeholder="Course ID">
+    <input name="sec_id" placeholder="Section ID">
+
+    <select name="semester">
+        <option>Fall</option>
+        <option>Spring</option>
+        <option>Summer</option>
+        <option>Winter</option>
+    </select>
+
+    <input name="sec_year" placeholder="Year">
+    <input type="submit" value="Register">
+</form>
+{% endif %}
+
+{% if page == "drop" %}
+<h3>Drop Class</h3>
+
+<form method="POST">
+    <input name="course_id" placeholder="Course ID">
+    <input name="sec_id" placeholder="Section ID">
+
+    <select name="semester">
+        <option>Fall</option>
+        <option>Spring</option>
+        <option>Summer</option>
+        <option>Winter</option>
+    </select>
+
+    <input name="sec_year" placeholder="Year">
+    <input type="submit" value="Drop">
+</form>
+{% endif %}
+
+{% if page == "advisor" %}
+<h3>My Advisor</h3>
+
+{% if data %}
+<table border="1">
+    <tr>
+        <th>Advisor ID</th>
+        <th>Advisor Name</th>
+        <th>Department</th>
+    </tr>
+    {% for row in data %}
+    <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No advisor found.</p>
+{% endif %}
+{% endif %}
 
 {% endblock %}
