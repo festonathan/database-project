@@ -1,10 +1,62 @@
-{% extends  '/include/layout.html' %}
+{% extends 'include/layout.html' %}
 {% block content %}
 
-   <h1>Student Dashboard</h1>
+<h1 class="text-center">Student Dashboard</h1>
 
-   <h2>Courses Enrolled</h2>
+<div class="border p-4 text-center mb-4">
+    <h5 class="mb-3">Quick Actions</h5>
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <a href="{{ url_for('student_courses') }}" class="btn btn-outline-secondary btn-lg">My Courses</a>
+        <a href="{{ url_for('student_enroll') }}" class="btn btn-outline-secondary btn-lg">Enroll in Classes</a>
+        <a href="{{ url_for('student_advisor') }}" class="btn btn-outline-secondary btn-lg">My Advisor</a>
+    </div>
+</div>
 
-   <h2>Advisor</h2>
+{% if page == 'courses' and data %}
+<div class="mt-4">
+    <h4>My Enrolled Courses & Grades</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr><th>Course ID</th><th>Title</th><th>Section</th><th>Semester</th><th>Year</th><th>Grade</th><th></th></tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>{{ row[5] or 'N/A' }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('student_drop') }}" style="display:inline;">
+                        <input type="hidden" name="course_id" value="{{ row[0] }}">
+                        <input type="hidden" name="sec_id" value="{{ row[2] }}">
+                        <input type="hidden" name="semester" value="{{ row[3] }}">
+                        <input type="hidden" name="sec_year" value="{{ row[4] }}">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">Drop</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if page == 'advisor' %}
+<div class="mt-4">
+    <h4>My Advisor</h4>
+    {% if data %}
+        {% for row in data %}
+        <p><strong>Advisor ID:</strong> {{ row[0] }}</p>
+        <p><strong>Name:</strong> {{ row[1] }} {{ row[2] or '' }} {{ row[3] }}</p>
+        <p><strong>Department:</strong> {{ row[4] }}</p>
+        {% endfor %}
+    {% else %}
+        <p class="text-center col-6 mx-auto">No advisor assigned yet.</p>
+    {% endif %}
+</div>
+{% endif %}
 
 {% endblock %}
