@@ -1,72 +1,224 @@
-{% extends  '/include/layout.html' %}
+{% extends 'include/layout.html' %}
 {% block content %}
 
-   <h1>Instructor Dashboard</h1>
+<h1 class="text-center">Instructor Dashboard</h1>
 
-   <h2>Personal Information</h2>
-   <!--<h3>Password</h3>-->
-   <!--Changing Password-->
-   <!-- <form action="" method="POST">
-      <p>New Password</p>
-      <input type="text" name="new_password">
-      <p>Confirm Password</p>
-      <input type="text" name="confirm_password">
-      <br><br>
-      <input type="submit" value="New Password">
-   </form> -->
-   <br>
+<div class="border p-4 text-center mb-4">
+    <h5 class="mb-3">Quick Actions</h5>
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <a href="{{ url_for('instructor_sections') }}" class="btn btn-outline-secondary btn-lg">My Sections</a>
+        <a href="{{ url_for('instructor_advising') }}" class="btn btn-outline-secondary btn-lg">Advising</a>
+        <a href="{{ url_for('instructor_prereqs') }}" class="btn btn-outline-secondary btn-lg">Manage Prerequisites</a>
+    </div>
+</div>
 
-   <h2>Sections Teaching</h2>
-   <!--Clicks on a button for a given section-->
-   <form action="/instructor/sections">
-      {% for section in data %}
-         <input type="button" name="{{ section['sec_id'] }}">
-      {% endfor %}
-   </form>
+{% if page == 'sections' %}
+<div class="mt-4">
+    <h4 class="text-center">My Sections</h4>
+    
+    <form method="GET" class="mb-3">
+        <div class="row g-2 align-items-end">
+            <div class="col-auto">
+                <label class="form-label small">Semester</label>
+                <select name="semester" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option value="Fall" {% if filter_semester == 'Fall' %}selected{% endif %}>Fall</option>
+                    <option value="Spring" {% if filter_semester == 'Spring' %}selected{% endif %}>Spring</option>
+                    <option value="Summer" {% if filter_semester == 'Summer' %}selected{% endif %}>Summer</option>
+                    <option value="Winter" {% if filter_semester == 'Winter' %}selected{% endif %}>Winter</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <label class="form-label small">Year</label>
+                <input type="number" name="sec_year" class="form-control form-control-sm" 
+                       placeholder="e.g. 2022" value="{{ filter_year or '' }}" style="width: 100px;">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Filter</button>
+                <a href="{{ url_for('instructor_sections') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+            </div>
+        </div>
+    </form>
 
-   <!--Displays Student list for selected section-->
-   <!--Should display grades and submit grades for students-->
-   <h3>Students List</h3>
-   <form>
-      <table>
-         <tr>
-            <th>Section ID</th>
-            <th>Course ID</th>
-            <th>Student ID</th>
-            <th>Grade</th>
-         </tr>
-         {% for enrollment in data %}
-         <tr>
-            <td>{{ enrollment["sec_id"] }}</td>
-            <td>{{ enrollment["Course_id"] }}</td>
-            <td>{{ enrollment["student_id"] }}</td>
-            <td>{{ enrollment["grade"] }}</td>
-         </tr>
-         {% endfor %}
-      </table>
-   </form>
+    {% if data %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Course ID</th>
+                <th>Title</th>
+                <th>Sec ID</th>
+                <th>Semester</th>
+                <th>Year</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('instructor_roster') }}">
+                        <input type="hidden" name="course_id" value="{{ row[0] }}">
+                        <input type="hidden" name="sec_id" value="{{ row[2] }}">
+                        <input type="hidden" name="semester" value="{{ row[3] }}">
+                        <input type="hidden" name="sec_year" value="{{ row[4] }}">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">View Roster & Grades</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No sections found for the selected filters.</div>
+    {% endif %}
+</div>
+{% endif %}
 
+{% if page == 'roster' %}
+<div class="mt-4">
+    <h4 class="text-center">Section Roster & Grades</h4>
+    
+    {% if data %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Dept</th>
+                <th>Current Grade</th>
+                <th>Update Grade</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }} {{ row[2] or '' }} {{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>{{ row[5] or 'N/A' }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('instructor_submit_grade') }}" class="d-inline-flex align-items-center">
+                        <input type="hidden" name="student_id" value="{{ row[0] }}">
+                        <input type="hidden" name="course_id" value="{{ course_id | default('') }}">
+                        <input type="hidden" name="sec_id" value="{{ sec_id | default('') }}">
+                        <input type="hidden" name="semester" value="{{ semester | default('') }}">
+                        <input type="hidden" name="sec_year" value="{{ sec_year | default('') }}">
+                        <select name="grade" class="form-select form-select-sm me-1" style="width: 80px;">
+                            <option value="">--</option>
+                            <option value="A">A</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B">B</option>
+                            <option value="B-">B-</option>
+                            <option value="C+">C+</option>
+                            <option value="C">C</option>
+                            <option value="C-">C-</option>
+                            <option value="D+">D+</option>
+                            <option value="D">D</option>
+                            <option value="F">F</option>
+                        </select>
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">Save</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('instructor_remove_student') }}" class="d-inline">
+                        <input type="hidden" name="student_id" value="{{ row[0] }}">
+                        <input type="hidden" name="course_id" value="{{ course_id | default('') }}">
+                        <input type="hidden" name="sec_id" value="{{ sec_id | default('') }}">
+                        <input type="hidden" name="semester" value="{{ semester | default('') }}">
+                        <input type="hidden" name="sec_year" value="{{ sec_year | default('') }}">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">Remove</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No students enrolled in this section.</div>
+    {% endif %}
+    
+    <a href="{{ url_for('instructor_sections') }}" class="btn btn-outline-secondary mt-3">Back to My Sections</a>
+</div>
+{% endif %}
 
-   <!--Courses Table-->
-   <h2>Courses</h2>
-   <table>
-      <tr>
-         <th>Course ID</th>
-         <th>Course Title</th>
-         <th>Department</th>
-         <th>Credits</th>
-      </tr>
-      {% for course in data %}
-         <tr>
-            <td>{{ course["course_id"] }}</td>
-            <td>{{ course["title"] }}</td>
-            <td>{{ course["dept_name"] }}</td>
-            <td>{{ course["credits"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+{% if page == 'advising' %}
+<div class="mt-4">
+    <h4 class="text-center">Advising - Add/Remove Students</h4>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('instructor_add_advisor') }}">
+                <div class="input-group">
+                    <input type="text" name="student_id" class="form-control" placeholder="Student ID" pattern="[0-9]{9}" title="Student ID must be exactly 9 digits" required>
+                    <button class="btn btn-outline-secondary" type="submit">Add as Advisee</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-   
+    {% if advisees %}
+    <div>
+        <h5>Current Advisees ({{ advisees|length }})</h5>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for row in advisees %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }} {{ row[2] or '' }} {{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('instructor_remove_advisor') }}" style="display:inline;">
+                            <input type="hidden" name="student_id" value="{{ row[0] }}">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">You currently have no advisees assigned.</div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if page == 'prereqs' %}
+<div class="mt-4">
+    <h4 class="text-center">Manage Course Prerequisites</h4>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('instructor_add_prereq') }}" class="mb-3">
+                <div class="row g-2">
+                    <div class="col"><input type="text" name="course_id" class="form-control" placeholder="Course ID" pattern="[A-Z]{2,4}-[0-9]{3}" title="Course ID format: e.g. BIO-937 or CS-803" required></div>
+                    <div class="col"><input type="text" name="prereq_id" class="form-control" placeholder="Prereq ID" pattern="[A-Z]{2,4}-[0-9]{3}" title="Course ID format: e.g. BIO-937 or CS-803" required></div>
+                    <div class="col-auto"><button type="submit" class="btn btn-outline-secondary">Add Prereq</button></div>
+                </div>
+            </form>
+            <form method="POST" action="{{ url_for('instructor_remove_prereq') }}">
+                <div class="row g-2">
+                    <div class="col"><input type="text" name="course_id" class="form-control" placeholder="Course ID" pattern="[A-Z]{2,4}-[0-9]{3}" title="Course ID format: e.g. BIO-937" required></div>
+                    <div class="col"><input type="text" name="prereq_id" class="form-control" placeholder="Prereq ID" pattern="[A-Z]{2,4}-[0-9]{3}" title="Course ID format: e.g. BIO-937" required></div>
+                    <div class="col-auto"><button type="submit" class="btn btn-outline-secondary">Remove Prereq</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
