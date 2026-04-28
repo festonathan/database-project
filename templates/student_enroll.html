@@ -1,0 +1,35 @@
+{% extends 'include/layout.html' %}
+{% block title %}Enroll in Classes | Univ DB{% endblock %}
+{% block content %}
+<h1 class="text-center">Available Sections for Enrollment</h1>
+
+{% if available %}
+<table class="table table-hover">
+    <thead><tr><th>Course</th><th>Title</th><th>Sec</th><th>Sem/Year</th><th>Location</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for row in available %}
+    <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }} {{ row[4] }}</td>
+        <td>{{ row[5] }} {{ row[6] }}</td>
+        <td>
+            <form method="POST" action="{{ url_for('student_enroll') }}">
+                <input type="hidden" name="course_id" value="{{ row[0] }}">
+                <input type="hidden" name="sec_id" value="{{ row[2] }}">
+                <input type="hidden" name="semester" value="{{ row[3] }}">
+                <input type="hidden" name="sec_year" value="{{ row[4] }}">
+                <button type="submit" class="btn btn-outline-secondary btn-sm">Enroll</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No available sections at the moment.</p>
+{% endif %}
+
+<a href="{{ url_for('student_courses') }}" class="btn btn-outline-secondary">Back to My Courses</a>
+{% endblock %}
