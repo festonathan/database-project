@@ -1,173 +1,458 @@
-{% extends  '/include/layout.html' %}
+{% extends 'include/layout.html' %}
 {% block content %}
 
-   <h1>Administrator Dashboard</h1>
+<h1 class="text-center">Admin Dashboard</h1>
 
-   <h2>Personal Information</h2>
-   
-   <!-- <h3>Password</h3> -->
-   <!--Changing Password-->
-   <!-- <form action="" method="POST">
-      <p>New Password</p>
-      <input type="text" name="new_password">
-      <p>Confirm Password</p>
-      <input type="text" name="confirm_password">
-      <br><br>
-      <input type="submit" value="New Password">
-   </form> -->
-   <br>
+{% if not page %}
+<div class="border p-4 text-center mb-4">
+    <h5 class="mb-3">Quick Actions</h5>
+    <div class="d-grid gap-2 col-8 mx-auto">
+        <a href="{{ url_for('admin_courses') }}" class="btn btn-outline-secondary btn-lg">Manage Courses</a>
+        <a href="{{ url_for('admin_students') }}" class="btn btn-outline-secondary btn-lg">Manage Students</a>
+        <a href="{{ url_for('admin_instructors') }}" class="btn btn-outline-secondary btn-lg">Manage Instructors</a>
+        <a href="{{ url_for('admin_classrooms') }}" class="btn btn-outline-secondary btn-lg">Manage Classrooms</a>
+        <a href="{{ url_for('admin_departments') }}" class="btn btn-outline-secondary btn-lg">Manage Departments</a>
+        <a href="{{ url_for('admin_time_slots') }}" class="btn btn-outline-secondary btn-lg">Manage Time Slots</a>
+        <a href="{{ url_for('admin_sections') }}" class="btn btn-outline-secondary btn-lg">Manage Sections</a>
+        <a href="{{ url_for('admin_reports') }}" class="btn btn-outline-secondary btn-lg">View Queries</a>
+    </div>
+</div>
+{% endif %}
 
-   <!--Department Table-->
-   <h2>Department</h2>
-   <table>
-      <tr>
-         <th>Department Name</th>
-         <th>Building</th>
-         <th>Budget</th>
-      </tr>
-      {% for department in data %}
-         <tr>
-            <td>{{ department["dept_name"] }}</td>
-            <td>{{ department["buidling"] }}</td>
-            <td>{{ department["budget"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+{% if page == 'courses' %}
+<div class="mt-4">
+    <h4 class="text-center">Manage Courses</h4>
+    <form method="POST" action="{{ url_for('admin_create_course') }}" class="row g-3 mb-4">
+        <div class="col-md-2"><input type="text" name="course_id" class="form-control" placeholder="Course ID" required></div>
+        <div class="col-md-4"><input type="text" name="title" class="form-control" placeholder="Title" required></div>
+        <div class="col-md-3"><input type="text" name="dept_name" class="form-control" placeholder="Department" required></div>
+        <div class="col-md-1"><input type="number" name="credits" class="form-control" placeholder="Credits" required></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-outline-secondary w-100">Create Course</button></div>
+    </form>
+    <table class="table table-striped">
+        <thead><tr><th>Course ID</th><th>Title</th><th>Department</th><th>Credits</th><th>Update</th><th>Delete</th></tr></thead>
+        <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_update_course') }}" class="d-flex gap-1">
+                    <input type="hidden" name="course_id" value="{{ row[0] }}">
+                    <input type="text" name="title" value="{{ row[1] }}" class="form-control form-control-sm">
+                    <input type="text" name="dept_name" value="{{ row[2] }}" class="form-control form-control-sm">
+                    <input type="number" name="credits" value="{{ row[3] }}" class="form-control form-control-sm">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Update</button>
+                </form>
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_delete_course') }}">
+                    <input type="hidden" name="course_id" value="{{ row[0] }}">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 
+{% if page == 'students' %}
+<div class="mt-4">
+    <h4 class="text-center">Manage Students</h4>
+    <form method="POST" action="{{ url_for('admin_create_student') }}" class="row g-3 mb-4">
+        <div class="col-md-2"><input type="text" name="student_id" class="form-control" placeholder="Student ID" required></div>
+        <div class="col-md-2"><input type="text" name="first_name" class="form-control" placeholder="First Name" required></div>
+        <div class="col-md-2"><input type="text" name="middle_name" class="form-control" placeholder="Middle Name"></div>
+        <div class="col-md-2"><input type="text" name="last_name" class="form-control" placeholder="Last Name" required></div>
+        <div class="col-md-2"><input type="text" name="dept_name" class="form-control" placeholder="Department"></div>
+        <div class="col-md-1"><input type="number" name="tot_cred" class="form-control" placeholder="Credits" value="0"></div>
+        <div class="col-md-2"><input type="password" name="password" class="form-control" placeholder="Password" required></div>
+        <div class="col-md-1"><button type="submit" class="btn btn-outline-secondary w-100">Create Student</button></div>
+    </form>
+    <table class="table table-striped">
+        <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Credits</th><th>Advisor</th><th>Update</th><th>Delete</th></tr></thead>
+        <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }} {{ row[2] }} {{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+            <td>{{ row[5] }}</td>
+            <td>{{ row[6] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_update_student') }}" class="d-flex gap-1">
+                    <input type="hidden" name="student_id" value="{{ row[0] }}">
+                    <input type="text" name="first_name" value="{{ row[1] }}" class="form-control form-control-sm">
+                    <input type="text" name="middle_name" value="{{ row[2] }}" class="form-control form-control-sm">
+                    <input type="text" name="last_name" value="{{ row[3] }}" class="form-control form-control-sm">
+                    <input type="text" name="dept_name" value="{{ row[4] }}" class="form-control form-control-sm">
+                    <input type="number" name="tot_cred" value="{{ row[5] }}" class="form-control form-control-sm">
+                    <input type="text" name="advisor_id" value="{{ row[6] }}" class="form-control form-control-sm">
+                    <input type="password" name="password" placeholder="New password" class="form-control form-control-sm">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Update</button>
+                </form>
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_delete_student') }}">
+                    <input type="hidden" name="student_id" value="{{ row[0] }}">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 
-   <!--Classroom Table-->
-   <h2>Classroom</h2>
-   <table>
-      <tr>
-         <th>Building</th>
-         <th>Room Number</th>
-         <th>Capacity</th>
-      </tr>
-      {% for classroom in data %}
-         <tr>
-            <td>{{ classroom["building"] }}</td>
-            <td>{{ classroom["room_number"] }}</td>
-            <td>{{ classroom["capacity"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+{% if page == 'instructors' %}
+<div class="mt-4">
+    <h4 class="text-center">Manage Instructors</h4>
+    <form method="POST" action="{{ url_for('admin_create_instructor') }}" class="row g-3 mb-4">
+        <div class="col-md-2"><input type="text" name="instructor_id" class="form-control" placeholder="Instructor ID" required></div>
+        <div class="col-md-2"><input type="text" name="first_name" class="form-control" placeholder="First Name" required></div>
+        <div class="col-md-2"><input type="text" name="middle_name" class="form-control" placeholder="Middle Name"></div>
+        <div class="col-md-2"><input type="text" name="last_name" class="form-control" placeholder="Last Name" required></div>
+        <div class="col-md-2"><input type="text" name="dept_name" class="form-control" placeholder="Department"></div>
+        <div class="col-md-1"><input type="number" name="salary" class="form-control" placeholder="Salary" step="0.01"></div>
+        <div class="col-md-2"><input type="password" name="password" class="form-control" placeholder="Password" required></div>
+        <div class="col-md-1"><button type="submit" class="btn btn-outline-secondary w-100">Create Instructor</button></div>
+    </form>
+    <table class="table table-striped">
+        <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Salary</th><th>Update</th><th>Delete</th></tr></thead>
+        <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }} {{ row[2] }} {{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+            <td>{{ row[5] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_update_instructor') }}" class="d-flex gap-1">
+                    <input type="hidden" name="instructor_id" value="{{ row[0] }}">
+                    <input type="text" name="first_name" value="{{ row[1] }}" class="form-control form-control-sm">
+                    <input type="text" name="middle_name" value="{{ row[2] }}" class="form-control form-control-sm">
+                    <input type="text" name="last_name" value="{{ row[3] }}" class="form-control form-control-sm">
+                    <input type="text" name="dept_name" value="{{ row[4] }}" class="form-control form-control-sm">
+                    <input type="number" name="salary" value="{{ row[5] }}" class="form-control form-control-sm" step="0.01">
+                    <input type="password" name="password" placeholder="New password" class="form-control form-control-sm">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Update</button>
+                </form>
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_delete_instructor') }}">
+                    <input type="hidden" name="instructor_id" value="{{ row[0] }}">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 
+{% if page == 'classrooms' %}
+<div class="mt-4">
+    <h4 class="text-center">Manage Classrooms</h4>
+    <form method="POST" action="{{ url_for('admin_create_classroom') }}" class="row g-3 mb-4">
+        <div class="col-md-4"><input type="text" name="building" class="form-control" placeholder="Building" required></div>
+        <div class="col-md-3"><input type="text" name="room_number" class="form-control" placeholder="Room Number" required></div>
+        <div class="col-md-3"><input type="number" name="capacity" class="form-control" placeholder="Capacity" required></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-outline-secondary w-100">Create Classroom</button></div>
+    </form>
+    <table class="table table-striped">
+        <thead><tr><th>Building</th><th>Room</th><th>Capacity</th><th>Update</th><th>Delete</th></tr></thead>
+        <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_update_classroom') }}" class="d-flex gap-1">
+                    <input type="hidden" name="building" value="{{ row[0] }}">
+                    <input type="hidden" name="room_number" value="{{ row[1] }}">
+                    <input type="number" name="capacity" value="{{ row[2] }}" class="form-control form-control-sm">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Update</button>
+                </form>
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_delete_classroom') }}">
+                    <input type="hidden" name="building" value="{{ row[0] }}">
+                    <input type="hidden" name="room_number" value="{{ row[1] }}">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 
-   <!--Courses Table-->
-   <h2>Courses</h2>
-   <table>
-      <tr>
-         <th>Course ID</th>
-         <th>Course Title</th>
-         <th>Department</th>
-         <th>Credits</th>
-      </tr>
-      {% for course in data %}
-         <tr>
-            <td>{{ course["course_id"] }}</td>
-            <td>{{ course["title"] }}</td>
-            <td>{{ course["dept_name"] }}</td>
-            <td>{{ course["credits"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+{% if page == 'departments' %}
+<div class="mt-4">
+    <h4 class="text-center">Manage Departments</h4>
+    <form method="POST" action="{{ url_for('admin_create_department') }}" class="row g-3 mb-4">
+        <div class="col-md-4"><input type="text" name="dept_name" class="form-control" placeholder="Department Name" required></div>
+        <div class="col-md-3"><input type="text" name="building" class="form-control" placeholder="Building" required></div>
+        <div class="col-md-3"><input type="number" name="budget" class="form-control" placeholder="Budget" step="0.01" required></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-outline-secondary w-100">Create Department</button></div>
+    </form>
+    <table class="table table-striped">
+        <thead><tr><th>Name</th><th>Building</th><th>Budget</th><th>Update</th><th>Delete</th></tr></thead>
+        <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_update_department') }}" class="d-flex gap-1">
+                    <input type="hidden" name="dept_name" value="{{ row[0] }}">
+                    <input type="text" name="building" value="{{ row[1] }}" class="form-control form-control-sm">
+                    <input type="number" name="budget" value="{{ row[2] }}" class="form-control form-control-sm" step="0.01">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Update</button>
+                </form>
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_delete_department') }}">
+                    <input type="hidden" name="dept_name" value="{{ row[0] }}">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 
-   <!--Section Table-->
-   <h2>Section</h2>
-   <table>
-      <tr>
-         <th>Course ID</th>
-         <th>Section ID</th>
-         <th>Semester</th>
-         <th>Year</th>
-         <th>Building</th>
-         <th>Room Number</th>
-         <th>Time Slot ID</th>
-      </tr>
-      {% for section in data %}
-         <tr>
-            <td>{{ section["course_id"] }}</td>
-            <td>{{ section["sec_id"] }}</td>
-            <td>{{ section["semester"] }}</td>
-            <td>{{ section["sec_year"] }}</td>
-            <td>{{ section["building"] }}</td>
-            <td>{{ section["room_number"] }}</td>
-            <td>{{ section["time_slot_id"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
+{% if page == 'time_slots' %}
+<div class="mt-4">
+    <h4 class="text-center">Manage Time Slots</h4>
+    <form method="POST" action="{{ url_for('admin_create_time_slot') }}" class="row g-3 mb-4">
+        <div class="col-md-2"><input type="text" name="time_slot_id" class="form-control" placeholder="ID" required></div>
+        <div class="col-md-2"><input type="text" name="day" class="form-control" placeholder="Day" required></div>
+        <div class="col-md-1"><input type="number" name="start_hr" class="form-control" placeholder="Start Hr" required></div>
+        <div class="col-md-1"><input type="number" name="start_min" class="form-control" placeholder="Start Min" required></div>
+        <div class="col-md-1"><input type="number" name="end_hr" class="form-control" placeholder="End Hr" required></div>
+        <div class="col-md-1"><input type="number" name="end_min" class="form-control" placeholder="End Min" required></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-outline-secondary w-100">Create Time Slot</button></div>
+    </form>
+    <table class="table table-striped">
+        <thead><tr><th>ID</th><th>Day</th><th>Start</th><th>End</th><th>Update</th><th>Delete</th></tr></thead>
+        <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}:{{ row[3] }}</td>
+            <td>{{ row[4] }}:{{ row[5] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_update_time_slot') }}" class="d-flex gap-1">
+                    <input type="hidden" name="time_slot_id" value="{{ row[0] }}">
+                    <input type="text" name="day" value="{{ row[1] }}" class="form-control form-control-sm">
+                    <input type="number" name="start_hr" value="{{ row[2] }}" class="form-control form-control-sm">
+                    <input type="number" name="start_min" value="{{ row[3] }}" class="form-control form-control-sm">
+                    <input type="number" name="end_hr" value="{{ row[4] }}" class="form-control form-control-sm">
+                    <input type="number" name="end_min" value="{{ row[5] }}" class="form-control form-control-sm">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Update</button>
+                </form>
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_delete_time_slot') }}">
+                    <input type="hidden" name="time_slot_id" value="{{ row[0] }}">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 
+{% if page == 'sections' %}
+<div class="mt-4">
+    <h4 class="text-center">Manage Sections</h4>
+    <form method="POST" action="{{ url_for('admin_create_section') }}" class="row g-3 mb-4">
+        <div class="col-md-2"><input type="text" name="course_id" class="form-control" placeholder="Course ID" required></div>
+        <div class="col-md-1"><input type="text" name="sec_id" class="form-control" placeholder="Sec ID" required></div>
+        <div class="col-md-2"><input type="text" name="semester" class="form-control" placeholder="Semester" required></div>
+        <div class="col-md-1"><input type="number" name="sec_year" class="form-control" placeholder="Year" required></div>
+        <div class="col-md-2"><input type="text" name="building" class="form-control" placeholder="Building"></div>
+        <div class="col-md-1"><input type="text" name="room_number" class="form-control" placeholder="Room"></div>
+        <div class="col-md-1"><input type="text" name="time_slot_id" class="form-control" placeholder="Time Slot"></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-outline-secondary w-100">Create Section</button></div>
+    </form>
+    <form method="POST" action="{{ url_for('admin_assign_teacher') }}" class="row g-3 mb-4 border p-3">
+        <div class="col-md-2"><input type="text" name="instructor_id" class="form-control" placeholder="Instructor ID" required></div>
+        <div class="col-md-2"><input type="text" name="course_id" class="form-control" placeholder="Course ID" required></div>
+        <div class="col-md-1"><input type="text" name="sec_id" class="form-control" placeholder="Sec ID" required></div>
+        <div class="col-md-2"><input type="text" name="semester" class="form-control" placeholder="Semester" required></div>
+        <div class="col-md-1"><input type="number" name="sec_year" class="form-control" placeholder="Year" required></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-outline-secondary w-100">Assign Teacher</button></div>
+    </form>
+    <form method="POST" action="{{ url_for('admin_remove_teacher') }}" class="row g-3 mb-4 border p-3">
+        <div class="col-md-2"><input type="text" name="instructor_id" class="form-control" placeholder="Instructor ID" required></div>
+        <div class="col-md-2"><input type="text" name="course_id" class="form-control" placeholder="Course ID" required></div>
+        <div class="col-md-1"><input type="text" name="sec_id" class="form-control" placeholder="Sec ID" required></div>
+        <div class="col-md-2"><input type="text" name="semester" class="form-control" placeholder="Semester" required></div>
+        <div class="col-md-1"><input type="number" name="sec_year" class="form-control" placeholder="Year" required></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-outline-secondary w-100">Remove Teacher</button></div>
+    </form>
+    <table class="table table-striped">
+        <thead><tr><th>Course</th><th>Sec</th><th>Semester</th><th>Year</th><th>Building</th><th>Room</th><th>Time Slot</th><th>Update</th><th>Delete</th></tr></thead>
+        <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+            <td>{{ row[5] }}</td>
+            <td>{{ row[6] }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_update_section') }}" class="d-flex gap-1">
+                    <input type="hidden" name="course_id" value="{{ row[0] }}">
+                    <input type="hidden" name="sec_id" value="{{ row[1] }}">
+                    <input type="hidden" name="semester" value="{{ row[2] }}">
+                    <input type="hidden" name="sec_year" value="{{ row[3] }}">
+                    <input type="text" name="building" value="{{ row[4] }}" class="form-control form-control-sm">
+                    <input type="text" name="room_number" value="{{ row[5] }}" class="form-control form-control-sm">
+                    <input type="text" name="time_slot_id" value="{{ row[6] }}" class="form-control form-control-sm">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Update</button>
+                </form>
+            </td>
+            <td>
+                <form method="POST" action="{{ url_for('admin_delete_section') }}">
+                    <input type="hidden" name="course_id" value="{{ row[0] }}">
+                    <input type="hidden" name="sec_id" value="{{ row[1] }}">
+                    <input type="hidden" name="semester" value="{{ row[2] }}">
+                    <input type="hidden" name="sec_year" value="{{ row[3] }}">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 
-   <!--Time Slot Table-->
-   <h2>Time Slot</h2>
-   <table>
-      <tr>
-         <th>Time Slot ID</th>
-         <th>Day(s)</th>
-         <th>Start Time</th>
-         <th>End Time</th>
-      </tr>
-      {% for time_slot in data %}
-         <tr>
-            <td>{{ time_slot["time_slot_id"] }}</td>
-            <td>{{ time_slot["day"] }}</td>
-            <td>{{ time_slot["start_hr"] }}:{{ time_slot["start_min"] }}</td>
-            <td>{{ time_slot["end_hr"] }}:{{ time_slot["end_min"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
-
-
-   <!--Instructors Table-->
-   <h2>Instructors</h2>
-   <table>
-      <tr>
-         <th>Instructor ID</th>
-         <th>User ID</th>
-         <th>Legal Name</th>
-         <th>Department</th>
-         <th>Salary</th>
-      </tr>
-      {% for instructor in data %}
-         <tr>
-            <td>{{ instructor["instructor_id"] }}</td>
-            <td>{{ instructor["user_id"] }}</td>
-            <td>{{ instructor["first_name"] instructor["middle_name"] instructor["last_name"] }}</td>
-            <td>{{ instructor["dept_name"] }}</td>
-            <td>{{ instructor["salary"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-   <!--create, modify, destroy-->
-
-   <!--Modify Instructor's course sections-->
-
-
-
-   <!--Students Table-->
-   <h2>Students</h2>
-   <table>
-      <tr>
-         <th>Student ID</th><th>User ID</th><th>Legal Name</th><th>Department</th><th>Total Credits</th><th>Advisor ID</th>
-      </tr>
-      {% for student in data %}
-         <tr>
-            <td>{{ student["student_id"] }}</td>
-            <td>{{ student["user_id"] }}</td>
-            <td>{{ student["first_name"] student["middle_name"] student["last_name"] }}</td>
-            <td>{{ student["dept_name"] }}</td>
-            <td>{{ student["tot_cred"] }}</td>
-            <td>{{ student["advisor_id"] }}</td>
-         </tr>
-      {% endfor %}
-   </table>
-
-   <!--create, modify, destroy-->
-
+{% if page == 'reports' %}
+<div class="mt-4">
+    <h4 class="text-center">Additional Queries</h4>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>Average Grade by Department</h5>
+                    <form method="POST">
+                        <input type="text" name="dept_name" class="form-control mb-2" placeholder="Department Name" required>
+                        <button type="submit" name="dept_avg" class="btn btn-outline-secondary">Run</button>
+                    </form>
+                    {% if results.dept_avg %}
+                    <p class="mt-3"><strong>Average GPA:</strong> {{ results.dept_avg[0][0] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>Average Grade for Course Across Semesters and Years</h5>
+                    <form method="POST">
+                        <input type="text" name="course_id" class="form-control mb-2" placeholder="Course ID" required>
+                        <div class="row g-2 mb-2">
+                            <div class="col"><input type="number" name="start_year" class="form-control" placeholder="Start Year" required></div>
+                            <div class="col"><select name="start_semester" class="form-select">
+                                <option value="">All Semesters</option>
+                                <option value="Fall">Fall</option>
+                                <option value="Spring">Spring</option>
+                                <option value="Summer">Summer</option>
+                                <option value="Winter">Winter</option>
+                            </select></div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col"><input type="number" name="end_year" class="form-control" placeholder="End Year" required></div>
+                            <div class="col"><select name="end_semester" class="form-select">
+                                <option value="">All Semesters</option>
+                                <option value="Fall">Fall</option>
+                                <option value="Spring">Spring</option>
+                                <option value="Summer">Summer</option>
+                                <option value="Winter">Winter</option>
+                            </select></div>
+                        </div>
+                        <button type="submit" name="class_range" class="btn btn-outline-secondary">Run</button>
+                    </form>
+                    {% if results.class_range %}
+                    <p class="mt-3"><strong>Average GPA:</strong> {{ results.class_range[0][0] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>Best / Worst Performing Classes</h5>
+                    <form method="POST">
+                        <input type="text" name="semester" class="form-control mb-2" placeholder="Semester (Fall/Spring/Summer/Winter)" required>
+                        <input type="number" name="year" class="form-control mb-2" placeholder="Year" required>
+                        <select name="mode" class="form-select mb-3">
+                            <option value="both">Both Best and Worst</option>
+                            <option value="best">Best Only</option>
+                            <option value="worst">Worst Only</option>
+                        </select>
+                        <button type="submit" name="best_worst" class="btn btn-outline-secondary">Run</button>
+                    </form>
+                    {% if results.best_worst %}
+                    <div class="mt-3">
+                        {% for row in results.best_worst %}
+                        <p><strong>{{ row[0] }}</strong> - GPA: {{ row[1] }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>Total Students by Department</h5>
+                    <form method="POST">
+                        <input type="text" name="dept_name" class="form-control mb-2" placeholder="Department Name" required>
+                        <button type="submit" name="tot_students" class="btn btn-outline-secondary">Run</button>
+                    </form>
+                    {% if results.tot_students %}
+                    <p class="mt-3"><strong>Total Students:</strong> {{ results.tot_students[0][0] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5>Currently Enrolled Students by Department</h5>
+                    <form method="POST">
+                        <input type="text" name="dept_name" class="form-control mb-2" placeholder="Department Name" required>
+                        <button type="submit" name="current_enrolled" class="btn btn-outline-secondary">Run</button>
+                    </form>
+                    {% if results.current_enrolled %}
+                    <p class="mt-3"><strong>Currently Enrolled:</strong> {{ results.current_enrolled[0][0] }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
