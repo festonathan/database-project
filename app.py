@@ -137,15 +137,34 @@ def admin_delete_course():
 @role_required("admin")
 def admin_students():
     cursor = get_cursor()
+
     cursor.execute("""
         SELECT student_id, first_name, middle_name, last_name, dept_name, tot_cred, advisor_id
         FROM student
         ORDER BY last_name, first_name
     """)
     data = cursor.fetchall()
-    cursor.close()
-    return render_template("admin.html", user_id=session["user_id"], data=data, page="students")
 
+    cursor.execute("SELECT dept_name FROM department ORDER BY dept_name")
+    departments = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT instructor_id, first_name, middle_name, last_name
+        FROM instructor
+        ORDER BY last_name, first_name
+    """)
+    instructors = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "admin.html",
+        user_id=session["user_id"],
+        data=data,
+        page="students",
+        departments=departments,
+        instructors=instructors
+    )
 
 @app.route("/admin/student/create", methods=["POST"])
 @role_required("admin")
@@ -216,14 +235,26 @@ def admin_delete_student():
 @role_required("admin")
 def admin_instructors():
     cursor = get_cursor()
+
     cursor.execute("""
         SELECT instructor_id, first_name, middle_name, last_name, dept_name, salary
         FROM instructor
         ORDER BY last_name, first_name
     """)
     data = cursor.fetchall()
+
+    cursor.execute("SELECT dept_name FROM department ORDER BY dept_name")
+    departments = cursor.fetchall()
+
     cursor.close()
-    return render_template("admin.html", user_id=session["user_id"], data=data, page="instructors")
+
+    return render_template(
+        "admin.html",
+        user_id=session["user_id"],
+        data=data,
+        page="instructors",
+        departments=departments
+    )
 
 
 @app.route("/admin/instructor/create", methods=["POST"])

@@ -33,16 +33,45 @@
         <h4 class="text-center mb-3">Manage Courses</h4>
 
         <form method="POST" action="{{ url_for('admin_create_course') }}" class="row g-3 mb-4">
-            <div class="col-md-2"><input type="text" name="course_id" class="form-control" placeholder="Course ID" required></div>
-            <div class="col-md-4"><input type="text" name="title" class="form-control" placeholder="Title" required></div>
-            <div class="col-md-3"><input type="text" name="dept_name" class="form-control" placeholder="Department" required></div>
-            <div class="col-md-1"><input type="number" name="credits" class="form-control" placeholder="Credits" required></div>
-            <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Create</button></div>
+            <div class="col-md-2">
+                <input type="text" name="course_id" class="form-control" placeholder="Course ID" required>
+            </div>
+
+            <div class="col-md-4">
+                <input type="text" name="title" class="form-control" placeholder="Title" required>
+            </div>
+
+            <div class="col-md-3">
+                <select name="dept_name" class="form-select" required>
+                    <option value="">Select Department</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept[0] }}">{{ dept[0] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-1">
+                <input type="number" name="credits" class="form-control" placeholder="Credits" required>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Create</button>
+            </div>
         </form>
 
         <div class="table-responsive">
             <table class="table table-striped table-bordered align-middle">
-                <thead><tr><th>Course ID</th><th>Title</th><th>Department</th><th>Credits</th><th>Update</th><th>Delete</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Course ID</th>
+                        <th>Title</th>
+                        <th>Department</th>
+                        <th>Credits</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
                 <tbody>
                 {% for row in data %}
                 <tr>
@@ -50,15 +79,27 @@
                     <td>{{ row[1] }}</td>
                     <td>{{ row[2] }}</td>
                     <td>{{ row[3] }}</td>
+
                     <td>
                         <form method="POST" action="{{ url_for('admin_update_course') }}" class="d-flex gap-1">
                             <input type="hidden" name="course_id" value="{{ row[0] }}">
+
                             <input type="text" name="title" value="{{ row[1] }}" class="form-control form-control-sm">
-                            <input type="text" name="dept_name" value="{{ row[2] }}" class="form-control form-control-sm">
+
+                            <select name="dept_name" class="form-select form-select-sm">
+                                {% for dept in departments %}
+                                <option value="{{ dept[0] }}" {% if row[2] == dept[0] %}selected{% endif %}>
+                                    {{ dept[0] }}
+                                </option>
+                                {% endfor %}
+                            </select>
+
                             <input type="number" name="credits" value="{{ row[3] }}" class="form-control form-control-sm">
+
                             <button type="submit" class="btn btn-primary btn-sm">Update</button>
                         </form>
                     </td>
+
                     <td>
                         <form method="POST" action="{{ url_for('admin_delete_course') }}">
                             <input type="hidden" name="course_id" value="{{ row[0] }}">
@@ -80,19 +121,69 @@
         <h4 class="text-center mb-3">Manage Students</h4>
 
         <form method="POST" action="{{ url_for('admin_create_student') }}" class="row g-3 mb-4">
-            <div class="col-md-2"><input type="text" name="student_id" class="form-control" placeholder="Student ID" required></div>
-            <div class="col-md-2"><input type="text" name="first_name" class="form-control" placeholder="First Name" required></div>
-            <div class="col-md-2"><input type="text" name="middle_name" class="form-control" placeholder="Middle Name"></div>
-            <div class="col-md-2"><input type="text" name="last_name" class="form-control" placeholder="Last Name" required></div>
-            <div class="col-md-2"><input type="text" name="dept_name" class="form-control" placeholder="Department"></div>
-            <div class="col-md-1"><input type="number" name="tot_cred" class="form-control" placeholder="Credits" value="0"></div>
-            <div class="col-md-2"><input type="password" name="password" class="form-control" placeholder="Password" required></div>
-            <div class="col-md-1"><button type="submit" class="btn btn-primary w-100">Create</button></div>
+            <div class="col-md-2">
+                <input type="text" name="student_id" class="form-control" placeholder="Student ID" required>
+            </div>
+
+            <div class="col-md-2">
+                <input type="text" name="first_name" class="form-control" placeholder="First Name" required>
+            </div>
+
+            <div class="col-md-2">
+                <input type="text" name="middle_name" class="form-control" placeholder="Middle Name">
+            </div>
+
+            <div class="col-md-2">
+                <input type="text" name="last_name" class="form-control" placeholder="Last Name" required>
+            </div>
+
+            <div class="col-md-2">
+                <select name="dept_name" class="form-select">
+                    <option value="">Select Department</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept[0] }}">{{ dept[0] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-1">
+                <input type="number" name="tot_cred" class="form-control" placeholder="Credits" value="0">
+            </div>
+
+            <div class="col-md-3">
+                <select name="advisor_id" class="form-select">
+                    <option value="">No Advisor</option>
+                    {% for inst in instructors %}
+                    <option value="{{ inst[0] }}">
+                        {{ inst[0] }} - {{ inst[1] }} {{ inst[2] or '' }} {{ inst[3] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Create</button>
+            </div>
         </form>
 
         <div class="table-responsive">
             <table class="table table-striped table-bordered align-middle">
-                <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Credits</th><th>Advisor</th><th>Update</th><th>Delete</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Credits</th>
+                        <th>Advisor</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
                 <tbody>
                 {% for row in data %}
                 <tr>
@@ -101,19 +192,41 @@
                     <td>{{ row[4] }}</td>
                     <td>{{ row[5] }}</td>
                     <td>{{ row[6] or 'None' }}</td>
+
                     <td>
                         <form method="POST" action="{{ url_for('admin_update_student') }}" class="d-flex gap-1">
                             <input type="hidden" name="student_id" value="{{ row[0] }}">
+
                             <input type="text" name="first_name" value="{{ row[1] }}" class="form-control form-control-sm">
                             <input type="text" name="middle_name" value="{{ row[2] or '' }}" class="form-control form-control-sm">
                             <input type="text" name="last_name" value="{{ row[3] }}" class="form-control form-control-sm">
-                            <input type="text" name="dept_name" value="{{ row[4] or '' }}" class="form-control form-control-sm">
+
+                            <select name="dept_name" class="form-select form-select-sm">
+                                <option value="">None</option>
+                                {% for dept in departments %}
+                                <option value="{{ dept[0] }}" {% if row[4] == dept[0] %}selected{% endif %}>
+                                    {{ dept[0] }}
+                                </option>
+                                {% endfor %}
+                            </select>
+
                             <input type="number" name="tot_cred" value="{{ row[5] }}" class="form-control form-control-sm">
-                            <input type="text" name="advisor_id" value="{{ row[6] or '' }}" class="form-control form-control-sm" placeholder="Advisor">
+
+                            <select name="advisor_id" class="form-select form-select-sm">
+                                <option value="">No Advisor</option>
+                                {% for inst in instructors %}
+                                <option value="{{ inst[0] }}" {% if row[6] == inst[0] %}selected{% endif %}>
+                                    {{ inst[0] }} - {{ inst[1] }} {{ inst[3] }}
+                                </option>
+                                {% endfor %}
+                            </select>
+
                             <input type="password" name="password" placeholder="New password" class="form-control form-control-sm">
+
                             <button type="submit" class="btn btn-primary btn-sm">Update</button>
                         </form>
                     </td>
+
                     <td>
                         <form method="POST" action="{{ url_for('admin_delete_student') }}">
                             <input type="hidden" name="student_id" value="{{ row[0] }}">
@@ -135,19 +248,57 @@
         <h4 class="text-center mb-3">Manage Instructors</h4>
 
         <form method="POST" action="{{ url_for('admin_create_instructor') }}" class="row g-3 mb-4">
-            <div class="col-md-2"><input type="text" name="instructor_id" class="form-control" placeholder="Instructor ID" required></div>
-            <div class="col-md-2"><input type="text" name="first_name" class="form-control" placeholder="First Name" required></div>
-            <div class="col-md-2"><input type="text" name="middle_name" class="form-control" placeholder="Middle Name"></div>
-            <div class="col-md-2"><input type="text" name="last_name" class="form-control" placeholder="Last Name" required></div>
-            <div class="col-md-2"><input type="text" name="dept_name" class="form-control" placeholder="Department"></div>
-            <div class="col-md-1"><input type="number" name="salary" class="form-control" placeholder="Salary" step="0.01"></div>
-            <div class="col-md-2"><input type="password" name="password" class="form-control" placeholder="Password" required></div>
-            <div class="col-md-1"><button type="submit" class="btn btn-primary w-100">Create</button></div>
+            <div class="col-md-2">
+                <input type="text" name="instructor_id" class="form-control" placeholder="Instructor ID" required>
+            </div>
+
+            <div class="col-md-2">
+                <input type="text" name="first_name" class="form-control" placeholder="First Name" required>
+            </div>
+
+            <div class="col-md-2">
+                <input type="text" name="middle_name" class="form-control" placeholder="Middle Name">
+            </div>
+
+            <div class="col-md-2">
+                <input type="text" name="last_name" class="form-control" placeholder="Last Name" required>
+            </div>
+
+            <div class="col-md-2">
+                <select name="dept_name" class="form-select">
+                    <option value="">Select Department</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept[0] }}">{{ dept[0] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-1">
+                <input type="number" name="salary" class="form-control" placeholder="Salary" step="0.01">
+            </div>
+
+            <div class="col-md-2">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">Create</button>
+            </div>
         </form>
 
         <div class="table-responsive">
             <table class="table table-striped table-bordered align-middle">
-                <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Salary</th><th>Update</th><th>Delete</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Salary</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
                 <tbody>
                 {% for row in data %}
                 <tr>
@@ -155,18 +306,32 @@
                     <td>{{ row[1] }} {{ row[2] or '' }} {{ row[3] }}</td>
                     <td>{{ row[4] }}</td>
                     <td>{{ row[5] }}</td>
+
                     <td>
                         <form method="POST" action="{{ url_for('admin_update_instructor') }}" class="d-flex gap-1">
                             <input type="hidden" name="instructor_id" value="{{ row[0] }}">
+
                             <input type="text" name="first_name" value="{{ row[1] }}" class="form-control form-control-sm">
                             <input type="text" name="middle_name" value="{{ row[2] or '' }}" class="form-control form-control-sm">
                             <input type="text" name="last_name" value="{{ row[3] }}" class="form-control form-control-sm">
-                            <input type="text" name="dept_name" value="{{ row[4] or '' }}" class="form-control form-control-sm">
+
+                            <select name="dept_name" class="form-select form-select-sm">
+                                <option value="">None</option>
+                                {% for dept in departments %}
+                                <option value="{{ dept[0] }}" {% if row[4] == dept[0] %}selected{% endif %}>
+                                    {{ dept[0] }}
+                                </option>
+                                {% endfor %}
+                            </select>
+
                             <input type="number" name="salary" value="{{ row[5] }}" class="form-control form-control-sm" step="0.01">
+
                             <input type="password" name="password" placeholder="New password" class="form-control form-control-sm">
+
                             <button type="submit" class="btn btn-primary btn-sm">Update</button>
                         </form>
                     </td>
+
                     <td>
                         <form method="POST" action="{{ url_for('admin_delete_instructor') }}">
                             <input type="hidden" name="instructor_id" value="{{ row[0] }}">
@@ -386,7 +551,19 @@
 
         <div class="table-responsive">
             <table class="table table-striped table-bordered align-middle">
-                <thead><tr><th>Course</th><th>Sec</th><th>Semester</th><th>Year</th><th>Building</th><th>Room</th><th>Time Slot</th><th>Update</th><th>Delete</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Sec</th>
+                        <th>Semester</th>
+                        <th>Year</th>
+                        <th>Building</th>
+                        <th>Room</th>
+                        <th>Time Slot</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
                 <tbody>
                 {% for row in data %}
                 <tr>
