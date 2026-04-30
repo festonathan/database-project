@@ -61,9 +61,7 @@ def logout():
     return redirect(url_for("login"))
 
 
-# =========================
-# ADMIN
-# =========================
+
 
 @app.route("/admin")
 @role_required("admin")
@@ -75,12 +73,22 @@ def admin():
 @role_required("admin")
 def admin_courses():
     cursor = get_cursor()
+
     cursor.execute("SELECT * FROM course ORDER BY course_id")
     data = cursor.fetchall()
+
+    cursor.execute("SELECT dept_name FROM department ORDER BY dept_name")
+    departments = cursor.fetchall()
+
     cursor.close()
-    return render_template("admin.html", user_id=session["user_id"], data=data, page="courses")
 
-
+    return render_template(
+        "admin.html",
+        user_id=session["user_id"],
+        data=data,
+        page="courses",
+        departments=departments
+    )
 @app.route("/admin/course/create", methods=["POST"])
 @role_required("admin")
 def admin_create_course():
@@ -699,9 +707,7 @@ def admin_personal():
     return render_template("admin.html", user_id=session["user_id"], page="personal")
 
 
-# =========================
-# INSTRUCTOR
-# =========================
+
 
 @app.route("/instructor")
 @role_required("instructor")
@@ -949,9 +955,7 @@ def instructor_remove_prereq():
     return redirect(url_for("instructor_prereqs"))
 
 
-# =========================
-# STUDENT
-# =========================
+
 
 @app.route("/student")
 @role_required("student")
@@ -1054,6 +1058,106 @@ def student_drop():
         flash(f"Error dropping course: {e}", "secondary")
 
     return redirect(url_for("student_courses"))
+
+@app.route("/student/profile", methods=["GET", "POST"])
+@role_required("student")
+def student_profile():
+    student_id = session["user_id"]
+
+    if request.method == "POST":
+        try:
+            password = request.form.get("password")
+            p_hash = generate_password_hash(password) if password else ""
+
+            cursor = get_cursor()
+            cursor.callproc("Update_Student", [
+                student_id,
+                request.form.get("first_name"),
+                request.form.get("middle_name") or "",
+                request.form.get("last_name"),
+                request.form.get("dept_name") or None,
+                int(request.form.get("tot_cred") or 0),
+                request.form.get("advisor_id") or None,
+                p_hash
+            ])
+            db.commit()
+            cursor.close()
+            flash("Profile updated successfully.", "secondary")
+        except Exception as e:
+            flash(f"Error updating profile: {e}", "secondary")
+
+        return redirect(url_for("student_profile"))
+
+    cursor = get_cursor()
+    cursor.execute("""
+        SELECT student_id, first_name, middle_name, last_name, dept_name, tot_cred, advisor_id
+        FROM student
+        WHERE student_id = %s
+    """, [student_id])
+    profile = cursor.fetchone()
+
+    cursor.execute("SELECT dept_name FROM department ORDER BY dept_name")
+    departments = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "student.html",
+        user_id=student_id,
+        page="profile",
+        profile=profile,
+        departments=departments
+    )
+
+
+@app.route("/instructor/profile", methods=["GET", "POST"])
+@role_required("instructor")
+def instructor_profile():
+    instructor_id = session["user_id"]
+
+    if request.method == "POST":
+        try:
+            password = request.form.get("password")
+            p_hash = generate_password_hash(password) if password else ""
+
+            cursor = get_cursor()
+            cursor.callproc("Update_Instructor", [
+                instructor_id,
+                request.form.get("first_name"),
+                request.form.get("middle_name") or "",
+                request.form.get("last_name"),
+                request.form.get("dept_name") or None,
+                float(request.form.get("salary") or 0),
+                p_hash
+            ])
+            db.commit()
+            cursor.close()
+            flash("Profile updated successfully.", "secondary")
+        except Exception as e:
+            flash(f"Error updating profile: {e}", "secondary")
+
+        return redirect(url_for("instructor_profile"))
+
+    cursor = get_cursor()
+    cursor.execute("""
+        SELECT instructor_id, first_name, middle_name, last_name, dept_name, salary
+        FROM instructor
+        WHERE instructor_id = %s
+    """, [instructor_id])
+    profile = cursor.fetchone()
+
+    cursor.execute("SELECT dept_name FROM department ORDER BY dept_name")
+    departments = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        "instructor.html",
+        user_id=instructor_id,
+        page="profile",
+        profile=profile,
+        departments=departments
+    )
 
 
 if __name__ == "__main__":

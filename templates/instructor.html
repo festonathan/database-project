@@ -11,6 +11,7 @@
             <a href="{{ url_for('instructor_sections') }}" class="btn btn-primary btn-lg">My Sections</a>
             <a href="{{ url_for('instructor_advising') }}" class="btn btn-primary btn-lg">Advising</a>
             <a href="{{ url_for('instructor_prereqs') }}" class="btn btn-primary btn-lg">Manage Prerequisites</a>
+            <a href="{{ url_for('instructor_profile') }}" class="btn btn-primary btn-lg">My Profile</a>
         </div>
     </div>
 </div>
@@ -285,6 +286,49 @@
         {% else %}
         <div class="alert alert-info">No prerequisites found.</div>
         {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% if page == 'profile' %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h4 class="text-center mb-3">My Profile</h4>
+
+        <form method="POST" class="col-md-7 mx-auto">
+            <div class="mb-3">
+                <label class="form-label">Instructor ID</label>
+                <input type="text" class="form-control" value="{{ profile[0] }}" disabled>
+                <small class="text-muted">ID cannot be changed.</small>
+            </div>
+
+            <label class="form-label">First Name</label>
+            <input type="text" name="first_name" class="form-control mb-3" value="{{ profile[1] }}" required>
+
+            <label class="form-label">Middle Name</label>
+            <input type="text" name="middle_name" class="form-control mb-3" value="{{ profile[2] or '' }}">
+
+            <label class="form-label">Last Name</label>
+            <input type="text" name="last_name" class="form-control mb-3" value="{{ profile[3] }}" required>
+
+            <label class="form-label">Department</label>
+            <select name="dept_name" class="form-select mb-3">
+                <option value="">No Department</option>
+                {% for dept in departments %}
+                <option value="{{ dept[0] }}" {% if profile[4] == dept[0] %}selected{% endif %}>
+                    {{ dept[0] }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label class="form-label">Salary</label>
+            <input type="number" name="salary" class="form-control mb-3" value="{{ profile[5] }}" step="0.01">
+
+            <label class="form-label">New Password Optional</label>
+            <input type="password" name="password" class="form-control mb-3" placeholder="Leave blank to keep current password">
+
+            <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+        </form>
     </div>
 </div>
 {% endif %}
